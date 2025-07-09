@@ -1,0 +1,25 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "CloudFormation template for EventBridge Ruleevent-raw-file-bovespa",
+  "Resources": {
+    "Rule212c09dc": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Name": "event-raw-file-bovespa",
+        "EventPattern": "{\"source\":[\"aws.s3\"],\"detail-type\":[\"Object Created\"],\"detail\":{\"bucket\":{\"name\":[\"fiap-ml-tc-fase2-data\"]},\"object\":{\"key\":[{\"prefix\":\"s3://fiap-ml-tc-fase2-data/raw-zone/\"}]}}}",
+        "State": "ENABLED",
+        "EventBusName": "default",
+        "Targets": [{
+          "Id": "Idc0680f8a-01c9-4755-b65d-e8c0f2e8967b",
+          "Arn": {
+            "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-trigger-glue-bovespa"
+          },
+          "RoleArn": {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/LabRole"
+          }
+        }]
+      }
+    }
+  },
+  "Parameters": {}
+}
