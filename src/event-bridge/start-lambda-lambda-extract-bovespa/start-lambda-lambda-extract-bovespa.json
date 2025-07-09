@@ -1,0 +1,22 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "CloudFormation template for EventBridge Rulestart-lambda-lambda-extract-bovespa",
+  "Resources": {
+    "Ruleb78632ae": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Name": "start-lambda-lambda-extract-bovespa",
+        "ScheduleExpression": "cron(0 17 ? * MON-FRI *)",
+        "State": "DISABLED",
+        "EventBusName": "default",
+        "Targets": [{
+          "Id": "Id2c20825a-9793-4efc-8337-f8b54671e102",
+          "Arn": {
+            "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-extract-bovespa"
+          }
+        }]
+      }
+    }
+  },
+  "Parameters": {}
+}
