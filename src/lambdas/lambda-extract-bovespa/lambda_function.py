@@ -55,7 +55,7 @@ def portfolio_day_to_df(json_data: dict) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 def lambda_handler(event, context):
-    s3_path ="s3://fiap-ml-tc-fase2-data/raw-zone/"
+    s3_path ="s3://fiap-ml-tc-fase2-data/raw-zone/tbl_raw_bovespa/"
     params_api = {
         'language': 'pt-br',
         'pageNumber': 1,
@@ -63,10 +63,12 @@ def lambda_handler(event, context):
         'index': 'IBOV',
         'segment': '2' # segmento 1 (consulta por codigo) ou 2 (consulta por setor de atuacao)
     }
-    json_data = get_portfolio_day(params_api)
-    df = portfolio_day_to_df(json_data)
-    wr.s3.to_parquet(df=df,path=s3_path, dataset=True, mode='overwrite_partitions', partition_cols=['header_date'])
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
-    }
+    try:
+        json_data = get_portfolio_day(params_api)
+        df = portfolio_day_to_df(json_data)
+        wr.s3.to_parquet(df=df,path=s3_path, dataset=True, mode='overwrite_partitions', partition_cols=['header_date'])
+        return {'statusCode': 200,'body': json.dumps('Scrap B3 realizado com sucesso!')}
+    except Exception as e:
+        return {'statusCode': 500, 'body': json.dumps(f'Erro ao realizar o scrap B3: {str(e)}')}
+    finally:
+        print("Scrap B3 finalizado.")
