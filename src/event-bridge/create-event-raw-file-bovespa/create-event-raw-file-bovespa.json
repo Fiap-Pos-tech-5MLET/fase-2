@@ -2,22 +2,32 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "CloudFormation template for EventBridge Ruleevent-raw-file-bovespa",
   "Resources": {
-    "Rulee3267dcc": {
+    "Rule2b52cbb5": {
       "Type": "AWS::Events::Rule",
       "Properties": {
         "Name": "event-raw-file-bovespa",
         "EventPattern": "{\"source\":[\"aws.s3\"],\"detail-type\":[\"Object Created\"],\"detail\":{\"bucket\":{\"name\":[\"fiap-ml-tc-fase2-data\"]},\"object\":{\"key\":[{\"prefix\":\"raw-zone/\"}]}}}",
         "State": "ENABLED",
         "EventBusName": "default",
-        "Targets": [{
-          "Id": "Idbc43c66f-0c5a-4af8-bf36-1a10e3c119e2",
-          "Arn": {
-            "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-trigger-glue-bovespa"
-          },
-          "RoleArn": {
-            "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/LabRole"
+        "Targets": [
+          {
+            "Id": "Idae9a636f-883a-4c03-962b-234b38a3983f",
+            "Arn": {
+              "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-trigger-glue-bovespa"
+            },
+            "RoleArn": {
+              "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/LabRole"
+            },
+            "InputTransformer": {
+              "InputPathsMap": {
+                "bucket_name": "$.detail.bucket.name",
+                "region": "$.region",
+                "s3_key": "$.detail.object.key"
+              },
+              "InputTemplate": "{\n  \"job_name\": \"glue-refined-zone-bovespa\",\n  \"job_parameters\": {\n    \"JOB_NAME\": \"glue-refined-zone-bovespa\",\n    \"TABLE_NAME\": \"tbl_refined_bovespa\",\n    \"DATABASE_NAME\": \"db_default\",\n    \"S3_BUCKET\":  <bucket_name>,\n    \"OBJECT_KEY\": <s3_key>,\n    \"S3_OUTPUT_BUCKET\": \"fiap-ml-tc-fase2-data\",\n    \"S3_OUTPUT_PREFIX\": \"refined-zone/tbl_refined_bovespa/\",\n    \"AWS_REGION\": <region>\n  }\n}"
+            }
           }
-        }]
+        ]
       }
     }
   },
