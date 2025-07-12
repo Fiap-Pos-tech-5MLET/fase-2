@@ -1,21 +1,31 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "CloudFormation template for EventBridge Rulestart-lambda-lambda-extract-bovespa",
+  "Description": "CloudFormation template for EventBridge Ruleevent-raw-file-bovespa",
   "Resources": {
-    "Rulee032473f": {
+    "Rulea10c93e5": {
       "Type": "AWS::Events::Rule",
       "Properties": {
-        "Name": "start-lambda-lambda-extract-bovespa",
-        "ScheduleExpression": "cron(0 17 ? * MON-FRI *)",
-        "State": "DISABLED",
+        "Name": "event-raw-file-bovespa",
+        "EventPattern": "{\"source\":[\"aws.s3\"],\"detail-type\":[\"Object Created\"],\"detail\":{\"bucket\":{\"name\":[\"fiap-ml-tc-fase2-data\"]},\"object\":{\"key\":[{\"prefix\":\"raw-zone/\"}]}}}",
+        "State": "ENABLED",
         "EventBusName": "default",
         "Targets": [
           {
-            "Id": "Id2cb91f9f-b192-477c-9454-0e72981777c3",
+            "Id": "Idc7242597-6bac-4ea7-8af9-bd034547f553",
             "Arn": {
-              "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-extract-bovespa"
+              "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-trigger-glue-bovespa"
             },
-            "Input": "{\n  \"s3_bucket\": \"fiap-ml-tc-fase2-data\",\n  \"s3_prefix\": \"raw-zone/tbl_raw_bovespa/\",\n  \"api\": {\n    \"host\": \"sistemaswebb3-listados.b3.com.br\",\n    \"route\": \"/indexProxy/indexCall/GetPortfolioDay/\",\n    \"timeout\": 60,\n    \"headers\": {\n      \"Content-Type\": \"application/json\",\n      \"Accept\": \"application/json, text/plain, */*\",\n      \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3\"\n    },\n    \"parameters\": {\n      \"language\": \"pt-br\",\n      \"pageNumber\": 1,\n      \"pageSize\": 120,\n      \"index\": \"IBOV\",\n      \"segment\": \"2\"\n    }\n  }\n}"
+            "RoleArn": {
+              "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/LabRole"
+            },
+            "InputTransformer": {
+              "InputPathsMap": {
+                "bucket_name": "$.detail.bucket.name",
+                "region": "$.region",
+                "s3_key": "$.detail.object.key"
+              },
+              "InputTemplate": "{\n  \"job_name\": \"glue-refined-zone-bovespa\",\n  \"job_parameters\": {\n    \"--JOB_NAME\": \"glue-refined-zone-bovespa\",\n    \"--TABLE_NAME\": \"tbl_refined_bovespa\",\n    \"--DATABASE_NAME\": \"db_default\",\n    \"--S3_BUCKET\":  <bucket_name>,\n    \"--OBJECT_KEY\": <s3_key>,\n    \"--S3_OUTPUT_BUCKET\": \"fiap-ml-tc-fase2-data\",\n    \"--S3_OUTPUT_PREFIX\": \"refined-zone/tbl_refined_bovespa/\",\n    \"--AWS_REGION\": <region>\n  }\n}"
+            }
           }
         ]
       }
