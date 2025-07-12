@@ -2,7 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "CloudFormation template for EventBridge Ruleevent-raw-file-bovespa",
   "Resources": {
-    "Rulea10c93e5": {
+    "Rule1b38f055": {
       "Type": "AWS::Events::Rule",
       "Properties": {
         "Name": "event-raw-file-bovespa",
@@ -11,7 +11,7 @@
         "EventBusName": "default",
         "Targets": [
           {
-            "Id": "Idc7242597-6bac-4ea7-8af9-bd034547f553",
+            "Id": "Idb1d0fbf4-10de-4e54-bee3-5b38fa2bcdab",
             "Arn": {
               "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-trigger-glue-bovespa"
             },
