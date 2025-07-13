@@ -6,6 +6,7 @@
 - [🛠 Tecnologias e Ferramentas](#-tecnologias-e-ferramentas-utilizadas)
 - [🧱 Arquitetura da Solução](#-arquitetura-da-solucao)
 - [🚀 Como Configurar e Executar o Projeto](#como-Configurar-e-Executar-o-Projeto)
+- [✅ Testes e Validações](#-testes-e-validações)
 - [📖 Catálogo de Dados e Metadados](#Catálogo-de-Dados-e-Metadados)
 - [🗂️ Estrutura de diretorios](#Estrutura-de-diretorios)
 - [🎥 Vídeo Demonstrativo](#-vídeo-demonstrativo)
@@ -43,6 +44,8 @@ O pipeline de dados foi desenvolvido para atender aos seguintes requisitos obrig
     - **Catalogação Automática (Glue Catalog):** O job Glue cataloga automaticamente os dados no AWS Glue Data Catalog, criando uma tabela no banco de dados padrão.
 
 - **Disponibilidade no Athena:** Os dados refinados estão disponíveis e legíveis para consultas no Amazon Athena.
+
+---
 
 ## 🛠 Tecnologias e Ferramentas
 |Ferramenta| Categoria| Utilização no Projeto|
@@ -130,6 +133,23 @@ cd seu-repositorio
     SELECT * FROM "db_default"."tbl_refined_bovespa" LIMIT 10;
     ```
 
+---
+
+## ✅ Testes e Validações
+A qualidade e a robustez do pipeline são garantidas por meio de validações e verificações em diferentes estágios do processo.
+
+### Validação de Parâmetros e Esquema
+- **Funções Lambda:** Ambas as funções Lambda possuem uma função `validate_event` que verifica a presença e a validade dos parâmetros de entrada, garantindo que os componentes só executem com a configuração correta.
+- **Job do Glue:** O job de ETL possui validações explícitas para os parâmetros de entrada (`validate_params`) e para o esquema dos dados lidos da camada bruta (`validate_schema`), evitando que o job processe dados malformados.
+
+### Qualidade de Dados
+Durante o processamento no Glue, registros com valores nulos em colunas essenciais são removidos através da função `drop_and_log_nulls`, assegurando a consistência dos dados na camada refinada.
+
+###  Desenvolvimento e Teste Interativo
+O notebook Jupyter (`notebook_etl_glue.ipynb`) serve como um ambiente de desenvolvimento e teste para a lógica de ETL. Nele, as transformações com PySpark podem ser desenvolvidas, testadas e validadas interativamente com uma amostra dos dados antes de serem implementadas no script final do Glue.
+
+---
+
 ## 📖 Catálogo de Dados e Metadados
 Os dados processados pelo pipeline são armazenados e catalogados na tabela `tbl_refined_bovespa`. Abaixo estão os detalhes do esquema dessa tabela, conforme definido no script do Glue.
 
@@ -158,7 +178,7 @@ A tabela é particionada para otimizar as consultas e o gerenciamento dos dados 
 |month      |int    | Mês da data de referência.|
 |day        |int    | Dia da data de referência.|
 |nom_setor  |string | Setor de atuação da empresa.|
-
+---
 
 
 ### 🗂️ Estrutura de diretorios
