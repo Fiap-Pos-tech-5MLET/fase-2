@@ -203,7 +203,7 @@ Este projeto foi desenvolvido com a colaboração dos seguintes membros:
 |Antônio Teixeira Santana Neto      | RM364480 | [link](https://github.com/antonioteixeirasn)
 |Gabriela Moreno Rocha dos Santos   | RM364538 | [link](https://github.com/gabrielaMSantos)
 |Erik Douglas Alves Gomes           | RM364379 | [link](https://github.com/Erik-DAG)
-|Leonardo Fernandes Soares          | RM364648 | []()
+|Leonardo Fernandes Soares          | RM364648 | [link](https://github.com/leferso)
 
 ## ⚖️ Licença
 Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
