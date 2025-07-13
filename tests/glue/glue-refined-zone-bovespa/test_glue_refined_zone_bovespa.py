@@ -29,7 +29,5 @@ class TestGlueRefinedZoneBovespa(unittest.TestCase):
         with self.assertRaises(ValueError):
             grzb.validate_schema(DummyDF(), ["a", "b", "c"])
 
-    # Adicione mais testes para funções puras conforme necessário
-
 if __name__ == "__main__":
     unittest.main()
